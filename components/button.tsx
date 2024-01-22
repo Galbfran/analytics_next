@@ -1,6 +1,7 @@
 'use client'
-import { getAnalytics, logEvent } from '@firebase/analytics';
+import { Analytics, getAnalytics, logEvent } from '@firebase/analytics';
 import { initializeApp } from 'firebase/app';
+import { useEffect } from 'react';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhmYLq_eju6KnPFoUyCKdb-kOmqYQxYBA",
@@ -13,9 +14,14 @@ const firebaseConfig = {
 };
 
 const ButtonFirebase = () => {
-    if (typeof window !== 'undefined') {
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+
+    let analytics : Analytics ;
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const app = initializeApp(firebaseConfig);
+            analytics = getAnalytics(app);
+        }
+    }, []); 
         const handleButtonClick = () => {
             logEvent(analytics, "button_click", { button_type: "start_button" });
         };
@@ -30,14 +36,8 @@ const ButtonFirebase = () => {
                 </button>
             </div>
         );
-    } else {
-        return (
-            <div>
-                Este componente solo es compatible con entornos de navegador.
-            </div>
-        );
-    }
-};
+    } 
+
 
 export default ButtonFirebase;
 
