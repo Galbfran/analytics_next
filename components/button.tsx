@@ -1,7 +1,7 @@
 'use client'
 import { Analytics, getAnalytics, logEvent } from '@firebase/analytics';
 import { initializeApp } from 'firebase/app';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhmYLq_eju6KnPFoUyCKdb-kOmqYQxYBA",
@@ -14,16 +14,20 @@ const firebaseConfig = {
 };
 
 const ButtonFirebase = () => {
-
-    let analytics : Analytics ;
+    const analyticsRef = useRef<Analytics | null>(null);
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const app = initializeApp(firebaseConfig);
-            analytics = getAnalytics(app);
+            const analytics = getAnalytics(app);
+            analyticsRef.current = analytics;
         }
     }, []); 
         const handleButtonClick = () => {
-            logEvent(analytics, "button_click", { button_type: "start_button" });
+            if (analyticsRef.current) {
+                logEvent(analyticsRef.current, "button_click", { button_type: "start_button" });
+            } else {
+                console.error("Analytics is not available.");
+            }
         };
         return (
             <div>
